@@ -1,25 +1,83 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import client from './client'
+import Card from './Card'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+  const [characters, setCharacters] = useState([]);
+  const [isLoading, setIsLoading] = useState(true)
+  
+  const [playerCards, setPlayerCards] = useState([])
+  const [computerCards, setComputerCards] = useState([])
+
+  const [currentCards, setCurrentCards] = useState([])
+  // const [cardsDealt, setCardsDealt] = useState(false)
+
+  useEffect(() => {
+    client.getEntries() //works like fetch method
+    .then(response => response.items)
+    .then((json) => {
+      setCharacters(json);
+      setIsLoading(false); 
+    })
+    .catch(console.log('request failed'));
+  }, [])
+
+  // useEffect(() => {
+  //   dealNewCards()    
+  // }, [playerCards])
+
+  // Shuffle Function (taken from the Internet), takes characters Array and returns a shuffled Array
+  const shuffleCards = () => {
+     const shuffledCharacters = [...characters] //define new array that will get shuffled (goes through the list and swaps two items randomly)
+      for (let i = shuffledCharacters.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffledCharacters[i], shuffledCharacters[j]] = [shuffledCharacters[j], shuffledCharacters[i]];
+      }
+      return shuffledCharacters //gives us back the shuffled array
+  }
+
+  const dealNewCards = () => {
+    const oldPlayerCards = [...playerCards]
+    const playerCard = oldPlayerCards.shift() //removes the first Card from the playerCards array
+    setPlayerCards(oldPlayerCards) //sets the new Player Card State to the array without the dealt Card
+    const oldComputerCards = [...computerCards]
+    const computerCard = oldComputerCards.shift() //removes the first Card from the ComputerCards array
+    setComputerCards(oldComputerCards) //sets the new Computer Card State to the array without the dealt Card
+    setCurrentCards([playerCard, computerCard])
+    console.log(currentCards)
+  }
+
+  const startGame = () => {
+    const shuffledCards = shuffleCards()
+    // shuffleCards() : this function gets activated immediately
+    // shuffleCards: this function is only a variable that stores the information of the function 
+    // (use this if you DON'T want to activate the function but still want to share the information)
+   
+    const half = Math.ceil(shuffledCards.length / 2); 
+    const firstHalf = shuffledCards.splice(0, half)
+    const secondHalf = shuffledCards.splice(-half)
+    setPlayerCards([...firstHalf])
+    setComputerCards([...secondHalf])
+    console.log(playerCards)
+    dealNewCards()
+  }
+
+
+
+ return (
+   <div className='App'>
+   <h1 className="App__heading">Epic Battle</h1>
+   {/* {characters.map((character, index) =>  <Character character={character} key={index}/>)} */}
+   <div className="App__characters">
+    <div className="App__counter App__counter--player">Counter</div>
+    {isLoading? '' : <Card character={characters[0]} /> }
+    <button className="App__button--battle">Battle</button>
+    {isLoading? '' : <Card character={characters[0]} /> }
+    <div className="App__counter App__counter--computer">Counter</div>
+   </div>
+   <button className="App__button--new-game" onClick={startGame}>New Game</button>
+   </div>
+ )}
 
 export default App;
