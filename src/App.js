@@ -5,27 +5,35 @@ import Card from './Card'
 
 function App() {
   const [characters, setCharacters] = useState([]);
-  const [isLoading, setIsLoading] = useState(true)
+  // const [isLoading, setIsLoading] = useState(true)
   
   const [playerCards, setPlayerCards] = useState([])
   const [computerCards, setComputerCards] = useState([])
 
   const [currentCards, setCurrentCards] = useState([])
-  // const [cardsDealt, setCardsDealt] = useState(false)
+  const [cardsDealt, setCardsDealt] = useState(false)
 
   useEffect(() => {
     client.getEntries() //works like fetch method
     .then(response => response.items)
     .then((json) => {
       setCharacters(json);
-      setIsLoading(false); 
+      // setIsLoading(false);
     })
     .catch(console.log('request failed'));
   }, [])
 
-  // useEffect(() => {
-  //   dealNewCards()    
-  // }, [playerCards])
+
+  // this useEffect triggers when the playerCards/computerCards changes. It checks if there are any cards in the 
+  // playerCard and the computerCard array. It also checks if the currentCard array is empty. Only if all of these
+  // conditions are true, it deals new Cards. This prevents the game from trying to deal new cards if there aren't any to deal
+  useEffect(() => {
+    if (playerCards.length && computerCards.length && !currentCards.length) {
+      dealNewCards()
+      console.log(playerCards)
+    }
+  }, [playerCards, computerCards])
+
 
   // Shuffle Function (taken from the Internet), takes characters Array and returns a shuffled Array
   const shuffleCards = () => {
@@ -46,6 +54,7 @@ function App() {
     setComputerCards(oldComputerCards) //sets the new Computer Card State to the array without the dealt Card
     setCurrentCards([playerCard, computerCard])
     console.log(currentCards)
+    setCardsDealt(true)
   }
 
   const startGame = () => {
@@ -59,8 +68,6 @@ function App() {
     const secondHalf = shuffledCards.splice(-half)
     setPlayerCards([...firstHalf])
     setComputerCards([...secondHalf])
-    console.log(playerCards)
-    dealNewCards()
   }
 
 
@@ -71,9 +78,9 @@ function App() {
    {/* {characters.map((character, index) =>  <Character character={character} key={index}/>)} */}
    <div className="App__characters">
     <div className="App__counter App__counter--player">Counter</div>
-    {isLoading? '' : <Card character={characters[0]} /> }
+    {cardsDealt? <Card character={currentCards[0]} flipped={true}/> : <Card character={null} flipped={false}/> }
     <button className="App__button--battle">Battle</button>
-    {isLoading? '' : <Card character={characters[0]} /> }
+    {cardsDealt? <Card character={currentCards[1]} flipped={true}/> : <Card character={null} flipped={false}/>}
     <div className="App__counter App__counter--computer">Counter</div>
    </div>
    <button className="App__button--new-game" onClick={startGame}>New Game</button>
