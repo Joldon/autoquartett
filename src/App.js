@@ -13,6 +13,9 @@ function App() {
   const [currentCards, setCurrentCards] = useState([])
   const [cardsDealt, setCardsDealt] = useState(false)
 
+  const [currentValue, setCurrentValue] = useState()
+
+
   useEffect(() => {
     client.getEntries() //works like fetch method
     .then(response => response.items)
@@ -70,6 +73,13 @@ function App() {
     setComputerCards([...secondHalf])
   }
 
+  const compareAttribute = (evt) => {
+    evt.preventDefault();
+    if (currentCards[0].fields[currentValue] > currentCards[1].fields[currentValue]) {
+console.log('You win!')
+    } else { console.log('You lose!')
+         }
+  };
 
 
  return (
@@ -77,11 +87,11 @@ function App() {
    <h1 className="App__heading">Epic Battle</h1>
    {/* {characters.map((character, index) =>  <Character character={character} key={index}/>)} */}
    <div className="App__characters">
-    <div className="App__counter App__counter--player">Counter</div>
-    {cardsDealt? <Card character={currentCards[0]} flipped={true}/> : <Card character={null} flipped={false}/> }
-    <button className="App__button--battle">Battle</button>
+    <div className="App__counter App__counter--player">{playerCards.length + 1}</div>
+    {cardsDealt? <Card character={currentCards[0]} setCurrentValue={setCurrentValue} flipped={true}/> : <Card character={null} flipped={false}/> }
+    <button className="App__button--battle" onClick={compareAttribute}>Battle</button>
     {cardsDealt? <Card character={currentCards[1]} flipped={true}/> : <Card character={null} flipped={false}/>}
-    <div className="App__counter App__counter--computer">Counter</div>
+    <div className="App__counter App__counter--computer">{computerCards.length + 1}</div>
    </div>
    <button className="App__button--new-game" onClick={startGame}>New Game</button>
    </div>
