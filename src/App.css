@@ -21,6 +21,13 @@ html {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-image: url(./Pictures/4a6b5214f65c4848fd59c57caefc6cc0.gif); 
+  background-size: cover;  
+}
+
+.App__heading {
+  background-color: white;
+  padding: 2rem;
 }
 
 .App__counter {

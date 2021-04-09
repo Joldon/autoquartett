@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import client from './client'
 import Card from './Card'
+import background from "./Pictures/4a6b5214f65c4848fd59c57caefc6cc0.gif";
 
 function App() {
   const [characters, setCharacters] = useState([]);
@@ -95,6 +96,8 @@ function App() {
 
  return (
    <div className='App'>
+
+
    <h1 className="App__heading">Epic Battle</h1>
    <div className="App__display">{display}</div>
    {/* {characters.map((character, index) =>  <Character character={character} key={index}/>)} */}
