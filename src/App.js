@@ -15,6 +15,8 @@ function App() {
 
   const [currentValue, setCurrentValue] = useState()
 
+  const [display, setDisplay] = useState('Select your weapons!')
+  const [button, toggleButton] = useState(true)
 
   useEffect(() => {
     client.getEntries() //works like fetch method
@@ -76,22 +78,32 @@ function App() {
   const compareAttribute = (evt) => {
     evt.preventDefault();
     if (currentCards[0].fields[currentValue] > currentCards[1].fields[currentValue]) {
-console.log('You win!')
-    } else { console.log('You lose!')
-         }
+      setDisplay('You win!')
+      setPlayerCards([...playerCards, ...currentCards])
+
+    } else { 
+      setDisplay('You lose!')
+      setComputerCards([...computerCards, ...currentCards])
+    }
+   toggleButton(false)
   };
 
+    const newCards = () => {
+      dealNewCards()
+      toggleButton(true)
+    }
 
  return (
    <div className='App'>
    <h1 className="App__heading">Epic Battle</h1>
+   <div className="App__display">{display}</div>
    {/* {characters.map((character, index) =>  <Character character={character} key={index}/>)} */}
    <div className="App__characters">
-    <div className="App__counter App__counter--player">{playerCards.length + 1}</div>
-    {cardsDealt? <Card character={currentCards[0]} setCurrentValue={setCurrentValue} flipped={true}/> : <Card character={null} flipped={false}/> }
-    <button className="App__button--battle" onClick={compareAttribute}>Battle</button>
-    {cardsDealt? <Card character={currentCards[1]} flipped={true}/> : <Card character={null} flipped={false}/>}
-    <div className="App__counter App__counter--computer">{computerCards.length + 1}</div>
+    <div className="App__counter App__counter--player">{playerCards.length}</div>
+    {cardsDealt? <Card playerCard={true} character={currentCards[0]} setCurrentValue={setCurrentValue} flipped={true}/> : <Card character={null} flipped={false}/> }
+    <button className="App__button--battle" onClick={button ? compareAttribute : newCards}>{button? 'Battle': 'Next'}</button>
+    {cardsDealt? <Card playerCard={false} character={currentCards[1]} flipped={true}/> : <Card character={null} flipped={false}/>}
+    <div className="App__counter App__counter--computer">{computerCards.length}</div>
    </div>
    <button className="App__button--new-game" onClick={startGame}>New Game</button>
    </div>
