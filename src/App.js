@@ -96,9 +96,9 @@ function App() {
 
  return (
    <div className='App'>
+     <div className='App__wrapper'>
 
-
-   <h1 className="App__heading">Epic Battle</h1>
+   <h1 className="App__heading"></h1>
    <div className="App__display">{display}</div>
    {/* {characters.map((character, index) =>  <Character character={character} key={index}/>)} */}
    <div className="App__characters">
@@ -109,6 +109,7 @@ function App() {
     <div className="App__counter App__counter--computer">{computerCards.length}</div>
    </div>
    <button className="App__button--new-game" onClick={startGame}>New Game</button>
+   </div>
    </div>
  )}
 

@@ -21,17 +21,35 @@ html {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: black;
+   
+}
+
+.App__wrapper {
   background-image: url(./Pictures/4a6b5214f65c4848fd59c57caefc6cc0.gif); 
-  background-size: cover;  
+  background-size: cover; 
+  min-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10rem;
 }
 
 .App__heading {
-  background-color: white;
-  padding: 2rem;
+  background-image: url(./Pictures/Battle.png); 
+  background-size: cover;   
+  padding: 2rem;  
+  background-size: contain;
+  background-repeat: no-repeat; 
+  min-width: 10rem;  
+  margin-top: 5rem;    
+    
 }
 
 .App__counter {
   font-size: 2rem;
+  background-color: white;
+  min-width: 4rem;
 }
 
 .App__characters {
