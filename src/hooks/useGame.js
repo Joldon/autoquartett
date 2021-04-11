@@ -4,7 +4,6 @@ function useGame(characters) {
   
     // ******************* GAME STATES ******************
 
-    const [characterNames, setCharacterNames] = useState([])
 
   const [playerCards, setPlayerCards] = useState([]);
   const [computerCards, setComputerCards] = useState([]);

@@ -1,4 +1,4 @@
-import React, { useReducer} from 'react'
+import { useReducer} from 'react'
 
 function useGame2(characters) {
 
