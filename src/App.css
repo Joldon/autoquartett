@@ -35,6 +35,10 @@ html {
   margin: 10rem;
 }
 
+.App__overlay {
+  background-color: rgb(172, 48, 48);
+}
+
 .App__heading {
   background-image: url(./Pictures/Battle.png); 
   background-size: cover;   

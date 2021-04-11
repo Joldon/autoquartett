@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import client from './client'
 import Card from './Card'
-import background from "./Pictures/4a6b5214f65c4848fd59c57caefc6cc0.gif";
 
 function App() {
   const [characters, setCharacters] = useState([]);
@@ -76,8 +75,7 @@ function App() {
     setComputerCards([...secondHalf])
   }
 
-  const compareAttribute = (evt) => {
-    evt.preventDefault();
+  const compareAttribute = () => {
     if (currentCards[0].fields[currentValue] > currentCards[1].fields[currentValue]) {
       setDisplay('You win!')
       setPlayerCards([...playerCards, ...currentCards])
@@ -86,8 +84,40 @@ function App() {
       setDisplay('You lose!')
       setComputerCards([...computerCards, ...currentCards])
     }
-   toggleButton(false)
+   
+    toggleButton(false)
   };
+
+    const nextCards = () => {
+      if (playerCards.length && computerCards.length) {
+        compareAttribute()
+        return
+      }
+      checkWinCondition()
+    }
+
+    const checkWinCondition = () => {
+      if (playerCards.length === 0) {
+        endGame('Computer')
+        return
+      }
+      if (computerCards.length === 0) {
+        endGame('Player')
+        return
+      }
+    }
+
+    const endGame = (winner) => {
+      if (winner === 'Player') {
+        setDisplay('Congratulations. What a glorious win!')
+      }
+      if (winner === 'Computer') {
+        setDisplay('A bitter defeat. Try again.')
+      }
+      setPlayerCards([])
+      setComputerCards([])
+      setCurrentCards([])
+    }
 
     const newCards = () => {
       dealNewCards()
@@ -95,22 +125,51 @@ function App() {
     }
 
  return (
-   <div className='App'>
-     <div className='App__wrapper'>
-
-   <h1 className="App__heading"></h1>
-   <div className="App__display">{display}</div>
-   {/* {characters.map((character, index) =>  <Character character={character} key={index}/>)} */}
-   <div className="App__characters">
-    <div className="App__counter App__counter--player">{playerCards.length}</div>
-    {cardsDealt? <Card playerCard={true} character={currentCards[0]} setCurrentValue={setCurrentValue} flipped={true}/> : <Card character={null} flipped={false}/> }
-    <button className="App__button--battle" onClick={button ? compareAttribute : newCards}>{button? 'Battle': 'Next'}</button>
-    {cardsDealt? <Card playerCard={false} character={currentCards[1]} flipped={true}/> : <Card character={null} flipped={false}/>}
-    <div className="App__counter App__counter--computer">{computerCards.length}</div>
+   <div className="App">
+     <div className="App__wrapper">
+       <div className="App__overlay">
+       <h1 className="App__heading"></h1>
+       <div className="App__display">{display}</div>
+       {/* {characters.map((character, index) =>  <Character character={character} key={index}/>)} */}
+       <div className="App__characters">
+         <div className="App__counter App__counter--player">
+           {playerCards.length}
+         </div>
+         {cardsDealt ? (
+           <Card
+             playerCard={true}
+             character={currentCards[0]}
+             setCurrentValue={setCurrentValue}
+             flipped={true}
+           />
+         ) : (
+           <Card character={null} flipped={false} />
+         )}
+         <button
+           className="App__button--battle"
+           onClick={button ? nextCards : newCards}
+         >
+           {button ? "Battle" : "Next"}
+         </button>
+         {cardsDealt ? (
+           <Card
+             playerCard={false}
+             character={currentCards[1]}
+             flipped={true}
+           />
+         ) : (
+           <Card character={null} flipped={false} />
+         )}
+         <div className="App__counter App__counter--computer">
+           {computerCards.length}
+         </div>
+       </div>
+       <button className="App__button--new-game" onClick={startGame}>
+         New Game
+       </button>
+       </div>
+     </div>
    </div>
-   <button className="App__button--new-game" onClick={startGame}>New Game</button>
-   </div>
-   </div>
- )}
+ );}
 
 export default App;
