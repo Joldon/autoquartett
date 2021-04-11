@@ -3,6 +3,7 @@ import './App.css';
 import client from './client'
 import Card from './Card'
 import background from "./Pictures/4a6b5214f65c4848fd59c57caefc6cc0.gif";
+import logo from "./Pictures/Battle.png"
 
 function App() {
   const [characters, setCharacters] = useState([]);
@@ -96,9 +97,8 @@ function App() {
 
  return (
    <div className='App'>
-     <div className='App__wrapper'>
-
-   <h1 className="App__heading"></h1>
+     <div className='App__wrapper'>   
+   <img src={logo} />
    <div className="App__display">{display}</div>
    {/* {characters.map((character, index) =>  <Character character={character} key={index}/>)} */}
    <div className="App__characters">

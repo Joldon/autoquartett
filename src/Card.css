@@ -1,5 +1,5 @@
 .Character {
-    background-color: white;
+    background-color: rgb(255, 240, 191);
     border: 2px solid black;
     border-radius: 10px;
     margin: 2rem;
@@ -20,6 +20,10 @@
 
 .Character__name {
     font-size: 2rem;
+    font-weight: bold;
+    margin-top: 1rem;
+    padding: 0rem 0rem 1rem 0rem;
+    border-bottom: 1px solid #000;
 }
 
 .Character__attr {
