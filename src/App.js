@@ -4,6 +4,11 @@ import Card from './Card'
 import useGame2 from './hooks/useGame2'
 import client from './client'
 
+
+<style>
+@import url(');
+</style>
+
 function App() {
 
 // Get the API Data from Contentful and put it into our character state
@@ -86,10 +91,10 @@ function App() {
   }
 
 
+
   return (
     <div className="App">
      <div className="App__wrapper">
-       <div className="App__overlay">
        <h1 className="App__heading">{}</h1>
        <div className="App__display">{display}</div>
        <div className="App__characters">
@@ -129,7 +134,6 @@ function App() {
        <button className="App__button--new-game" onClick={handleNewGame}>
          New Game
        </button>
-       </div>
      </div>
    </div>
  );}
