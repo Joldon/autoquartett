@@ -42,6 +42,17 @@ html {
   margin: 10rem;
 }
 
+
+.App__heading {
+  background-image: url(./Pictures/Battle.png); 
+  background-size: cover;   
+  padding: 2rem;  
+  background-size: contain;
+  background-repeat: no-repeat; 
+  min-width: 10rem;  
+  margin-top: 5rem;    
+}
+  
 .App__logo {
   border: 10px solid #1550FF;
   box-shadow: 5px 5px 15px 5px #000000;
