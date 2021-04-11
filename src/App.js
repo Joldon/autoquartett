@@ -1,22 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import client from './client'
 import Card from './Card'
+import useGame2 from './hooks/useGame2'
+import client from './client'
 
 function App() {
+
+// Get the API Data from Contentful and put it into our character state
+
   const [characters, setCharacters] = useState([]);
-  // const [isLoading, setIsLoading] = useState(true)
-  
-  const [playerCards, setPlayerCards] = useState([])
-  const [computerCards, setComputerCards] = useState([])
-
-  const [currentCards, setCurrentCards] = useState([])
-  const [cardsDealt, setCardsDealt] = useState(false)
-
-  const [currentValue, setCurrentValue] = useState()
-
-  const [display, setDisplay] = useState('Select your weapons!')
-  const [button, toggleButton] = useState(true)
 
   useEffect(() => {
     client.getEntries() //works like fetch method
@@ -28,117 +20,86 @@ function App() {
     .catch(console.log('request failed'));
   }, [])
 
+// Bring in our Game Logic with the custom useGame Hook, pass in the characters
 
-  // this useEffect triggers when the playerCards/computerCards changes. It checks if there are any cards in the 
-  // playerCard and the computerCard array. It also checks if the currentCard array is empty. Only if all of these
-  // conditions are true, it deals new Cards. This prevents the game from trying to deal new cards if there aren't any to deal
-  useEffect(() => {
-    if (playerCards.length && computerCards.length && !currentCards.length) {
-      dealNewCards()
-      console.log(playerCards)
-    }
-  }, [playerCards, computerCards])
+  const [gameState, startGame, battle, nextCards] = useGame2(characters)
 
+  // Our UI State (dependent on the current Game State)
+  
+  const [isGameOn, toggleGameOn] = useState(false)
+  const [isGameOver, toggleGameOver] = useState(false)
 
-  // Shuffle Function (taken from the Internet), takes characters Array and returns a shuffled Array
-  const shuffleCards = () => {
-     const shuffledCharacters = [...characters] //define new array that will get shuffled (goes through the list and swaps two items randomly)
-      for (let i = shuffledCharacters.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffledCharacters[i], shuffledCharacters[j]] = [shuffledCharacters[j], shuffledCharacters[i]];
+  const [currentValue, setCurrentValue] = useState()
+  
+  const [display, setDisplay] = useState('Select your weapons!')
+  const [button, toggleButton] = useState(true)
+  const [buttonDisabled, setButtonDisabled] = useState(true)
+  
+
+  // useEffect to only start the game when the cards are dealt.
+    useEffect(() => {
+      if (gameState.cards.player.length) {
+        toggleGameOn(true)
+        
       }
-      return shuffledCharacters //gives us back the shuffled array
+    }, [gameState.cards])
+
+  //  useEffect that checks if the game has ended
+    useEffect(() => {
+      if (!gameState.cards.player.length || !gameState.cards.player.length) {
+        endGame()
+      }
+    }, [gameState])
+    
+    const endGame = () => {
+      toggleGameOver(true)
+      setButtonDisabled(true)
+      console.log(!isGameOn)
+      if (!gameState.cards.player.length && isGameOn) {
+        setDisplay('You lost this epic battle! What a bitter defeat. Try again.')
+      }
+      if (!gameState.cards.computer.length && isGameOn) {
+        setDisplay('You won this epic battle! What a glorious triumph!')
+      }
+    }
+    
+  const handleNewGame = () => {
+    startGame()
+    toggleButton(true)
+    setButtonDisabled(false)
+    setDisplay('Select your weapons')
   }
 
-  const dealNewCards = () => {
-    const oldPlayerCards = [...playerCards]
-    const playerCard = oldPlayerCards.shift() //removes the first Card from the playerCards array
-    setPlayerCards(oldPlayerCards) //sets the new Player Card State to the array without the dealt Card
-    const oldComputerCards = [...computerCards]
-    const computerCard = oldComputerCards.shift() //removes the first Card from the ComputerCards array
-    setComputerCards(oldComputerCards) //sets the new Computer Card State to the array without the dealt Card
-    setCurrentCards([playerCard, computerCard])
-    console.log(currentCards)
-    setCardsDealt(true)
+  const handleBattle = () => {
+    if (isGameOn) {
+      battle(currentValue)
+      toggleButton(false)
+    }
   }
 
-  const startGame = () => {
-    const shuffledCards = shuffleCards()
-    // shuffleCards() : this function gets activated immediately
-    // shuffleCards: this function is only a variable that stores the information of the function 
-    // (use this if you DON'T want to activate the function but still want to share the information)
-   
-    const half = Math.ceil(shuffledCards.length / 2); 
-    const firstHalf = shuffledCards.splice(0, half)
-    const secondHalf = shuffledCards.splice(-half)
-    setPlayerCards([...firstHalf])
-    setComputerCards([...secondHalf])
-  }
-
-  const compareAttribute = () => {
-    if (currentCards[0].fields[currentValue] > currentCards[1].fields[currentValue]) {
-      setDisplay('You win!')
-      setPlayerCards([...playerCards, ...currentCards])
-
-    } else { 
-      setDisplay('You lose!')
-      setComputerCards([...computerCards, ...currentCards])
-    }
-   
-    toggleButton(false)
-  };
-
-    const nextCards = () => {
-      if (playerCards.length && computerCards.length) {
-        compareAttribute()
-        return
-      }
-      checkWinCondition()
-    }
-
-    const checkWinCondition = () => {
-      if (playerCards.length === 0) {
-        endGame('Computer')
-        return
-      }
-      if (computerCards.length === 0) {
-        endGame('Player')
-        return
-      }
-    }
-
-    const endGame = (winner) => {
-      if (winner === 'Player') {
-        setDisplay('Congratulations. What a glorious win!')
-      }
-      if (winner === 'Computer') {
-        setDisplay('A bitter defeat. Try again.')
-      }
-      setPlayerCards([])
-      setComputerCards([])
-      setCurrentCards([])
-    }
-
-    const newCards = () => {
-      dealNewCards()
+  const handleNextCards = () => {
+    if (isGameOn) {
+      nextCards()
       toggleButton(true)
+      return
     }
+  }
 
- return (
-   <div className="App">
+
+  return (
+    <div className="App">
      <div className="App__wrapper">
        <div className="App__overlay">
-       <h1 className="App__heading"></h1>
+       <h1 className="App__heading">{}</h1>
        <div className="App__display">{display}</div>
-       {/* {characters.map((character, index) =>  <Character character={character} key={index}/>)} */}
        <div className="App__characters">
          <div className="App__counter App__counter--player">
-           {playerCards.length}
+           {isGameOn? gameState.cards.player.length : '0'}
          </div>
-         {cardsDealt ? (
+         {isGameOn ? (
            <Card
              playerCard={true}
-             character={currentCards[0]}
+             character={characters.filter(character => character.fields.name === gameState.currentCard.player)}
              setCurrentValue={setCurrentValue}
              flipped={true}
            />
@@ -147,29 +108,135 @@ function App() {
          )}
          <button
            className="App__button--battle"
-           onClick={button ? nextCards : newCards}
+           onClick={button ? handleBattle : handleNextCards}
+           disabled={buttonDisabled}
          >
            {button ? "Battle" : "Next"}
          </button>
-         {cardsDealt ? (
+         {isGameOn ? (
            <Card
              playerCard={false}
-             character={currentCards[1]}
+             character={characters.filter(character => character.fields.name === gameState.currentCard.computer)}
              flipped={true}
            />
          ) : (
            <Card character={null} flipped={false} />
          )}
          <div className="App__counter App__counter--computer">
-           {computerCards.length}
+           {isGameOn? gameState.cards.computer.length : '0'}
          </div>
        </div>
-       <button className="App__button--new-game" onClick={startGame}>
+       <button className="App__button--new-game" onClick={handleNewGame}>
          New Game
        </button>
        </div>
      </div>
    </div>
  );}
+ 
+ export default App;
+ 
 
-export default App;
+
+//  ****************** Game Logic that comes from the useGame Hook****************
+ 
+ // const [playerCards, setPlayerCards] = useState([])
+ // const [computerCards, setComputerCards] = useState([])
+
+ // const [currentCards, setCurrentCards] = useState([])
+ // const [cardsDealt, setCardsDealt] = useState(false)
+ 
+ // this useEffect triggers when the playerCards/computerCards changes. It checks if there are any cards in the 
+   // playerCard and the computerCard array. It also checks if the currentCard array is empty. Only if all of these
+   // conditions are true, it deals new Cards. This prevents the game from trying to deal new cards if there aren't any to deal
+   // useEffect(() => {
+   //   if (playerCards.length && computerCards.length && !currentCards.length) {
+   //     dealNewCards()
+   //     console.log(playerCards)
+   //   }
+   // }, [playerCards, computerCards])
+ 
+ 
+   // // Shuffle Function (taken from the Internet), takes characters Array and returns a shuffled Array
+   // const shuffleCards = () => {
+   //    const shuffledCharacters = [...characters] //define new array that will get shuffled (goes through the list and swaps two items randomly)
+   //     for (let i = shuffledCharacters.length - 1; i > 0; i--) {
+   //         const j = Math.floor(Math.random() * (i + 1));
+   //         [shuffledCharacters[i], shuffledCharacters[j]] = [shuffledCharacters[j], shuffledCharacters[i]];
+   //     }
+   //     return shuffledCharacters //gives us back the shuffled array
+   // }
+ 
+   // const dealNewCards = () => {
+   //   const oldPlayerCards = [...playerCards]
+   //   const playerCard = oldPlayerCards.shift() //removes the first Card from the playerCards array
+   //   setPlayerCards(oldPlayerCards) //sets the new Player Card State to the array without the dealt Card
+   //   const oldComputerCards = [...computerCards]
+   //   const computerCard = oldComputerCards.shift() //removes the first Card from the ComputerCards array
+   //   setComputerCards(oldComputerCards) //sets the new Computer Card State to the array without the dealt Card
+   //   setCurrentCards([playerCard, computerCard])
+   //   console.log(currentCards)
+   //   setCardsDealt(true)
+   // }
+ 
+   // const startGame = () => {
+   //   const shuffledCards = shuffleCards()
+   //   // shuffleCards() : this function gets activated immediately
+   //   // shuffleCards: this function is only a variable that stores the information of the function 
+   //   // (use this if you DON'T want to activate the function but still want to share the information)
+    
+   //   const half = Math.ceil(shuffledCards.length / 2); 
+   //   const firstHalf = shuffledCards.splice(0, half)
+   //   const secondHalf = shuffledCards.splice(-half)
+   //   setPlayerCards([...firstHalf])
+   //   setComputerCards([...secondHalf])
+   // }
+ 
+   // const compareAttribute = () => {
+   //   if (currentCards[0].fields[currentValue] > currentCards[1].fields[currentValue]) {
+   //     setDisplay('You win!')
+   //     setPlayerCards([...playerCards, ...currentCards])
+ 
+   //   } else { 
+   //     setDisplay('You lose!')
+   //     setComputerCards([...computerCards, ...currentCards])
+   //   }
+    
+   //   toggleButton(false)
+   // };
+ 
+   //   const nextCards = () => {
+   //     if (playerCards.length && computerCards.length) {
+   //       compareAttribute()
+   //       return
+   //     }
+   //     checkWinCondition()
+   //   }
+ 
+   //   const checkWinCondition = () => {
+   //     if (playerCards.length === 0) {
+   //       endGame('Computer')
+   //       return
+   //     }
+   //     if (computerCards.length === 0) {
+   //       endGame('Player')
+   //       return
+   //     }
+   //   }
+ 
+   //   const endGame = (winner) => {
+   //     if (winner === 'Player') {
+   //       setDisplay('Congratulations. What a glorious win!')
+   //     }
+   //     if (winner === 'Computer') {
+   //       setDisplay('A bitter defeat. Try again.')
+   //     }
+   //     setPlayerCards([])
+   //     setComputerCards([])
+   //     setCurrentCards([])
+   //   }
+ 
+   //   const newCards = () => {
+   //     dealNewCards()
+   //     toggleButton(true)
+   //   }

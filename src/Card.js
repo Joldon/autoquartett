@@ -8,7 +8,6 @@ function Card({character, flipped, setCurrentValue, playerCard}) {
 
   const [isActive, setActive] = useState (false);
 
-
 const toggleClass = (evt) => {
   if (playerCard) {
     setActive(!isActive);
@@ -25,16 +24,16 @@ const toggleClass = (evt) => {
       
   <div className="Character">
     <div className="Character__name">
-      {character.fields.name}
+      {character[0].fields.name}
     </div>
-    <img className="Character__picture" src={`https:${character.fields.picture.fields.file.url}`} width='250' height='250' alt='characters'></img>
+    <img className="Character__picture" src={`https:${character[0].fields.picture.fields.file.url}`} width='250' height='250' alt='characters'></img>
     
     
     {attributes.map((attribute) => <div 
       onClick={toggleClass} 
       stat={attribute.toLowerCase()}// e.g. 'height'
       className={`Character__attr ${selectedAttribute === attribute.toLowerCase() ? 'Character__attr--active': null}`}
-      >{attribute}: {character.fields[attribute.toLowerCase()]}
+      >{attribute}: {character[0].fields[attribute.toLowerCase()]}
       </div> )}
 
   </div>
