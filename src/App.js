@@ -11,10 +11,6 @@ import { BiSmile } from 'react-icons/bi';
 
 
 
-
-
-
-
 function App() {
 
 // Get the API Data from Contentful and put it into our character state
@@ -39,12 +35,15 @@ function App() {
   
   const [isGameOn, toggleGameOn] = useState(false)
   const [isGameOver, toggleGameOver] = useState(false)
+  const [winner, setWinner] = useState('')
 
   const [currentValue, setCurrentValue] = useState()
   
   const [display, setDisplay] = useState('Select your weapons!')
   const [button, toggleButton] = useState(true)
   const [buttonDisabled, setButtonDisabled] = useState(true)
+
+  const [computerVisible, setComputerVisible] = useState(false);
   
   const [music, setMusic] = useState('PLAYING')
 
@@ -58,7 +57,7 @@ function App() {
 
   //  useEffect that checks if the game has ended
     useEffect(() => {
-      if (!gameState.cards.player.length || !gameState.cards.player.length) {
+      if ((!gameState.cards.player.length || !gameState.cards.computer.length) && isGameOn) {
         endGame()
       }
     }, [gameState])
@@ -66,10 +65,12 @@ function App() {
     const endGame = () => {
       toggleGameOver(true)
       setButtonDisabled(true)
-      if (!gameState.cards.player.length && isGameOn) {
+      if (!gameState.cards.player.length) {
+        setWinner('computer')
         setDisplay('You lost this epic battle! What a bitter defeat. Try again.')
       }
-      if (!gameState.cards.computer.length && isGameOn) {
+      if (!gameState.cards.computer.length) {
+        setWinner('player')
         setDisplay('You won this epic battle! What a glorious triumph!')
       }
     }
@@ -78,13 +79,22 @@ function App() {
     startGame()
     toggleButton(true)
     setButtonDisabled(false)
+    setComputerVisible(false)
+    toggleGameOver(false)
     setDisplay('Select your weapons')
   }
 
   const handleBattle = () => {
     if (isGameOn) {
-      battle(currentValue)
+      const display = battle(currentValue)
+      setDisplay(display)
       toggleButton(false)
+      setComputerVisible(true)
+      if (gameState.cards.player.length === 0) {
+        alert('You lose!')
+      } else if (gameState.cards.computer.length === 0) {
+        alert('You win!')
+      }
     }
   }
 
@@ -92,6 +102,8 @@ function App() {
     if (isGameOn) {
       nextCards()
       toggleButton(true)
+      setComputerVisible(false)
+      setDisplay('Select your weapons')
       return
     }
   }
@@ -104,6 +116,7 @@ function App() {
       setMusic('PLAYING')
     }
   }
+
 
   return (
      <div className="App__wrapper">
@@ -120,6 +133,10 @@ function App() {
        </div>
        
        <div className="App__display">{display}</div>
+       {isGameOver? 
+       <div className="App__gameover">{winner === 'computer'? 'YOU LOST!!!!!!!!' : 'YOU WON!!!!!'}</div> :
+       ''
+       }
        <div className="App__characters">
          <div className="App__counter App__counter--player">
            {isGameOn? gameState.cards.player.length : '0'}
@@ -150,7 +167,8 @@ function App() {
            <Card
              playerCard={false}
              character={characters.filter(character => character.fields.name === gameState.currentCard.computer)}
-             flipped={true}
+             flipped={computerVisible? true : false}
+        
            />
          ) : (
            <Card character={null} flipped={false} />
