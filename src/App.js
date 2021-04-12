@@ -3,6 +3,7 @@ import './App.css';
 import Card from './Card'
 import useGame2 from './hooks/useGame2'
 import client from './client'
+import logo from "./Pictures/Battle.png"
 
 function App() {
 
@@ -90,6 +91,7 @@ function App() {
   return (
     <div className="App">
      <div className="App__wrapper">
+      <img src={logo} className="App__logo" />
        <h1 className="App__heading">{}</h1>
        <div className="App__display">{display}</div>
        <div className="App__characters">

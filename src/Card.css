@@ -1,39 +1,53 @@
 .Character {
-    background-color: rgb(255, 240, 191);
-    border: 3px solid black;
-    border-radius: 10px;
+    background-color: white;
+    border: 6px double black;
+    background-image: url(./Pictures/clouds.jpeg);
+    border-radius: 7px;
     margin: 2rem;
     box-shadow: 5px 5px 15px 5px #000000;
+    width: 35rem;
 }
 
 .bgr--black {
     background-color: black;
     width: 30rem;
     height: 50rem;
+    margin: 2rem;
+    box-shadow: 5px 5px 15px 5px #000000;
+    width: 35rem;
+    background-image: url(./Pictures/user1.jpg);
+    background-position: center;
 }
 
 .Character__picture {
     border: 2px solid black;
     margin: 2rem;
+    box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, inset 5px 5px 12px 5px rgba(0,0,0,0);
 }
 
 .Character__name {    
     font-size: 2rem;
-    font-weight: bold;
-    margin-top: 1rem;
-    padding: 0rem 0rem 1rem 0rem;
-    border-bottom: 2px solid #000;
+    background-color: gray;
+    font-weight: bold;       
+    padding: 1rem 0rem 1rem 0rem;
+    border-bottom: 3px solid #000;
+    
 }
 
 .Character__attr {
     font-size: 1.5rem;
     font-weight: bold;
+    background-color: white;
     margin: 0.5rem;
     border: 2px solid black; 
 }
 
-.Character__attr--active {
-    color: red;
+.Character__attr:hover {
+    border: 2px solid red;
+}
+
+.Character__attr--active {    
     font-weight: bold;
+    background-color: rgb(122, 122, 122);
     border: 2px solid red;    
 }
