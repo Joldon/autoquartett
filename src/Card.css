@@ -26,7 +26,8 @@
 }
 
 .Character__name {    
-    font-size: 2rem;
+    font-size: 3rem;
+    font-family: 'Emblema One', cursive;
     background-color: gray;
     font-weight: bold;       
     padding: 1rem 0rem 1rem 0rem;
