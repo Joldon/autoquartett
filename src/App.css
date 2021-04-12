@@ -88,7 +88,7 @@ html {
 }
 
 .App__counter {
-  font-size: 2rem;
+  font-size: 3rem;
   background-color: black;
   color: yellow;
   min-width: 4rem;
@@ -99,6 +99,7 @@ html {
   padding: 1rem;
   border: solid 2px red;
   box-shadow: 5px 5px 15px 5px #000000;
+  animation: displayblink 1s infinite;
 }
 
 .App__characters {
@@ -181,4 +182,29 @@ html {
   padding: 1rem;
   border: solid 2px red;
   box-shadow: 5px 5px 15px 5px #000000;
+  animation: displayblink2 1s infinite;
+}
+
+@keyframes displayblink {
+  0% {
+    text-shadow: 0px 0px 0px white;
+  }
+  50% {
+    text-shadow: 0px 0px 5px white;
+  }
+  100% {
+    text-shadow: 0px 0px 0px white;
+  }
+}
+
+@keyframes displayblink2 {
+  0% {
+    color: yellow;
+  }
+  50% {
+    color: black;
+  }
+  100% {
+    color: yellow;
+  }
 }

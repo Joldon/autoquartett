@@ -124,7 +124,8 @@ function useGame2(characters) {
                 },
                 playerWins: true
             })
-            return 'You win!'
+            console.log(currentPlayerCard)
+            return `${currentPlayerCard[0].fields[currentValue]} : ${currentComputerCard[0].fields[currentValue]}`
         }
         if (currentPlayerCard[0].fields[currentValue] <= currentComputerCard[0].fields[currentValue]) {
             const newPlayerCards = [...state.cards.player]
@@ -136,7 +137,8 @@ function useGame2(characters) {
                 },
                 playerWins: false
             })
-            return 'You lose!'
+            console.log(currentPlayerCard)
+            return `${currentPlayerCard[0].fields[currentValue]} : ${currentComputerCard[0].fields[currentValue]}`
         }
     };
       

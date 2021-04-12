@@ -27,7 +27,7 @@ function App() {
   // Our UI State (dependent on the current Game State)
   
   const [isGameOn, toggleGameOn] = useState(false)
-  const [isGameOver, toggleGameOver] = useState(true)
+  const [isGameOver, toggleGameOver] = useState(false)
   const [winner, setWinner] = useState('')
 
   const [currentValue, setCurrentValue] = useState()
@@ -78,7 +78,8 @@ function App() {
 
   const handleBattle = () => {
     if (isGameOn) {
-      battle(currentValue)
+      const display = battle(currentValue)
+      setDisplay(display)
       toggleButton(false)
       setComputerVisible(true)
       if (gameState.cards.player.length === 0) {
@@ -94,6 +95,7 @@ function App() {
       nextCards()
       toggleButton(true)
       setComputerVisible(false)
+      setDisplay('Select your weapons')
       return
     }
   }
