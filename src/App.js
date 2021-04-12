@@ -4,6 +4,16 @@ import Card from './Card'
 import useGame2 from './hooks/useGame2'
 import client from './client'
 import logo from "./Pictures/Battle.png"
+import Sound from 'react-sound'
+import Gamemusic from './Pictures/8_bit_boss_battle_4_by_eliteferrex.mp3'
+import { GiSpeaker, GiBrain, GiMuscleUp, GiBodyHeight, GiSandsOfTime, GiSpeakerOff } from 'react-icons/gi';
+import { BiSmile } from 'react-icons/bi';
+
+
+
+
+
+
 
 function App() {
 
@@ -36,6 +46,7 @@ function App() {
   const [button, toggleButton] = useState(true)
   const [buttonDisabled, setButtonDisabled] = useState(true)
   
+  const [music, setMusic] = useState('PLAYING')
 
   // useEffect to only start the game when the cards are dealt.
     useEffect(() => {
@@ -55,7 +66,6 @@ function App() {
     const endGame = () => {
       toggleGameOver(true)
       setButtonDisabled(true)
-      console.log(!isGameOn)
       if (!gameState.cards.player.length && isGameOn) {
         setDisplay('You lost this epic battle! What a bitter defeat. Try again.')
       }
@@ -86,13 +96,29 @@ function App() {
     }
   }
 
-
+  const toggleMusic = () => {
+    if (music === 'PLAYING') {
+      setMusic('PAUSED')
+    }
+    if (music === 'PAUSED') {
+      setMusic('PLAYING')
+    }
+  }
 
   return (
-    <div className="App">
      <div className="App__wrapper">
       <img src={logo} className="App__logo" />
-       <h1 className="App__heading">{}</h1>
+       <Sound 
+         url={Gamemusic}
+         playStatus={Sound.status[music]}
+         loop={true}
+         volume={10}
+         autoLoad={true}      
+       />
+       <div className="App__button--sound" onClick={toggleMusic}>
+       {music === 'PLAYING'? <GiSpeaker size={'4.8rem'}/> : <GiSpeakerOff size={'4.8rem'}/>}
+       </div>
+       
        <div className="App__display">{display}</div>
        <div className="App__characters">
          <div className="App__counter App__counter--player">
@@ -108,6 +134,7 @@ function App() {
          ) : (
            <Card character={null} flipped={false} />
          )}
+         <div className='App__buttons'>
          <button
            className="App__button--battle"
            onClick={button ? handleBattle : handleNextCards}
@@ -115,6 +142,10 @@ function App() {
          >
            {button ? "Battle" : "Next"}
          </button>
+         <button className="App__button--new-game" onClick={handleNewGame}>
+         New Game
+        </button>
+        </div>
          {isGameOn ? (
            <Card
              playerCard={false}
@@ -128,11 +159,8 @@ function App() {
            {isGameOn? gameState.cards.computer.length : '0'}
          </div>
        </div>
-       <button className="App__button--new-game" onClick={handleNewGame}>
-         New Game
-       </button>
+     
      </div>
-   </div>
  );}
  
  export default App;

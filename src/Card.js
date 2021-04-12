@@ -1,9 +1,19 @@
 import React, { useState } from 'react'
 import './Card.css'
+import { GiBrain, GiMuscleUp, GiBodyHeight, GiSandsOfTime } from 'react-icons/gi';
+import { BiSmile } from 'react-icons/bi';
 
 function Card({character, flipped, setCurrentValue, playerCard}) {
 
   const attributes = ['Height', 'Strength', 'Age', 'IQ', 'Funnyness']
+  const icons = {
+    'Height' : <GiBodyHeight size={'2rem'}/>,
+    'Strength' : <GiMuscleUp size={'2rem'}/>,
+    'Age' : <GiSandsOfTime size={'2rem'}/>,
+    'IQ': <GiBrain size={'2rem'}/>,
+    'Funnyness' : <BiSmile size={'2rem'}/>
+  }
+  
   const [selectedAttribute, setSelectedAttribute] = useState('')
 
   const [isActive, setActive] = useState (false);
@@ -27,15 +37,15 @@ const toggleClass = (evt) => {
       {character[0].fields.name}
     </div>
     <img className="Character__picture" src={`https:${character[0].fields.picture.fields.file.url}`} width='250' height='250' alt='characters'></img>
-    
+    <div className='Character__attr-wrapper'>
     
     {attributes.map((attribute) => <div 
       onClick={toggleClass} 
       stat={attribute.toLowerCase()}// e.g. 'height'
       className={`Character__attr ${selectedAttribute === attribute.toLowerCase() ? 'Character__attr--active': null}`}
-      >{attribute}: {character[0].fields[attribute.toLowerCase()]}
+      >{icons[attribute]} <div>{attribute}</div>{character[0].fields[attribute.toLowerCase()]}
       </div> )}
-
+    </div>
   </div>
 
     )

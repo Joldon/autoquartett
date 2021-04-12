@@ -28,21 +28,37 @@ html {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: black;
-   
+  background-color: black; 
 }
 
 .App__wrapper {
   background-image: url(./Pictures/4a6b5214f65c4848fd59c57caefc6cc0.gif); 
+  background-color: black;
   background-size: cover; 
   min-width: 100%;
   display: flex;
   flex-direction: column;
+  text-align: center;
   align-items: center;
-  margin: 10rem;
+  padding: 2rem;
 }
 
-  
+.App__button--sound {
+  position: relative;
+  left: 50rem;
+  top: -10rem;
+  width: 5rem;
+  height: 5rem;
+  border: 2px solid yellow;
+  border-radius: 50%;
+  background-color: red;
+}
+
+.App__button--sound:hover {
+  transform: scale(1.1);
+}
+
+
 .App__logo {
   border: 10px solid #1550FF;
   box-shadow: 5px 5px 15px 5px #000000;
@@ -70,7 +86,14 @@ html {
   margin: 0 auto;
 }
 
+.App__buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .App__button--new-game {
+  margin-top: 10rem;
   font-family: 'Display', Arial, sans-serif;
   font-weight: bold;
   width: 16rem;
@@ -94,6 +117,9 @@ html {
 .App__button--new-game:hover {
 	background:linear-gradient(to bottom, #c62d1f 5%, #f24537 100%);
 	background-color:#c62d1f;
+  box-shadow: 4px 4px 26px -1px rgba(255,0,0,0.75);
+    -webkit-box-shadow: 4px 4px 26px -1px rgba(255,0,0,0.75);
+    -moz-box-shadow: 4px 4px 26px -1px rgba(255,0,0,0.75);
 }
 
 .App__button--new-game:active {
@@ -124,6 +150,9 @@ html {
 .App__button--battle:hover {
 	background:linear-gradient(to bottom, #c62d1f 5%, #f24537 100%);
 	background-color:#c62d1f;
+  box-shadow: 4px 4px 26px -1px rgba(255,0,0,0.75);
+    -webkit-box-shadow: 4px 4px 26px -1px rgba(255,0,0,0.75);
+    -moz-box-shadow: 4px 4px 26px -1px rgba(255,0,0,0.75);
 }
 
 .App__button--battle:active {
@@ -135,7 +164,6 @@ html {
   min-width: 20rem;
   font-size: 2rem;
   background-color: black;  
-  margin-top: 2rem;
   font-family: 'Display', Arial, sans-serif;
   font-weight: bold;
   color: yellow;
