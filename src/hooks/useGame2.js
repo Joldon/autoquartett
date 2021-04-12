@@ -62,6 +62,8 @@ function useGame2(characters) {
 
     const [state, dispatch] = useReducer(reducer, initialState)
 
+    
+
 // ********************* NEW GAME ACTION *********************
 
     const newGame = () => {
