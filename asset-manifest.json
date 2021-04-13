@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/autoquartett/static/css/main.0a68e123.chunk.css",
+    "main.js": "/autoquartett/static/js/main.bfa40aea.chunk.js",
+    "main.js.map": "/autoquartett/static/js/main.bfa40aea.chunk.js.map",
+    "runtime-main.js": "/autoquartett/static/js/runtime-main.3be962ad.js",
+    "runtime-main.js.map": "/autoquartett/static/js/runtime-main.3be962ad.js.map",
+    "static/js/2.3ac89afe.chunk.js": "/autoquartett/static/js/2.3ac89afe.chunk.js",
+    "static/js/2.3ac89afe.chunk.js.map": "/autoquartett/static/js/2.3ac89afe.chunk.js.map",
+    "static/js/3.37038487.chunk.js": "/autoquartett/static/js/3.37038487.chunk.js",
+    "static/js/3.37038487.chunk.js.map": "/autoquartett/static/js/3.37038487.chunk.js.map",
+    "index.html": "/autoquartett/index.html",
+    "static/css/main.0a68e123.chunk.css.map": "/autoquartett/static/css/main.0a68e123.chunk.css.map",
+    "static/js/2.3ac89afe.chunk.js.LICENSE.txt": "/autoquartett/static/js/2.3ac89afe.chunk.js.LICENSE.txt",
+    "static/media/App.css": "/autoquartett/static/media/display_free_tfb-webfont.fc37768e.woff",
+    "static/media/8_bit_boss_battle_4_by_eliteferrex.c4298542.mp3": "/autoquartett/static/media/8_bit_boss_battle_4_by_eliteferrex.c4298542.mp3",
+    "static/media/Battle.79b54f9d.png": "/autoquartett/static/media/Battle.79b54f9d.png",
+    "static/media/Card.css": "/autoquartett/static/media/clouds.4a617f5e.jpeg",
+    "static/media/super_street_fighter_2_turbo_8_bit_music_ryu_stage_4297822133384776681.81b293a9.mp3": "/autoquartett/static/media/super_street_fighter_2_turbo_8_bit_music_ryu_stage_4297822133384776681.81b293a9.mp3"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.3be962ad.js",
+    "static/js/2.3ac89afe.chunk.js",
+    "static/css/main.0a68e123.chunk.css",
+    "static/js/main.bfa40aea.chunk.js"
+  ]
+}
