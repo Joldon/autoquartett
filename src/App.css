@@ -44,13 +44,17 @@ html {
   height: 100vh;
 }
 
-
-.App__button--sound {
+.App_upperrightwrapper {
+  display: flex;
   position: relative;
   left: 50rem;
-  top: -10rem;
+  top: -10rem;  
+}
+
+
+.App__button--sound { 
   width: 5rem;
-  height: 5rem;
+  height: 5rem; 
   border: 2px solid yellow;
   border-radius: 50%;
   background-color: red;
@@ -58,18 +62,18 @@ html {
 
 .App__gameover {
   position: absolute;
-  top: 45%;
+  top: 40rem;
   font-size: 10rem;
   text-align: center;
-  background-color: red;
   margin-top: 2rem;
   font-family: 'Display', Arial, sans-serif;
   font-weight: bold;
   color: black;
   padding: 3rem;
   border: solid 5px yellow;
-  box-shadow: 5px 5px 15px 5px #000000;
+  box-shadow: 5px 5px 10px 2px rgb(150, 150, 0);
   animation: textblink 1s infinite;
+  background: red;
 }
 
 
@@ -96,6 +100,11 @@ html {
   box-shadow: 5px 5px 15px 5px #000000;
 }
 
+
+.App__display-and-counter {
+  display: flex;
+}
+
 .App__counter {
   font-size: 3rem;
   background-color: black;
@@ -106,6 +115,7 @@ html {
   font-family: 'Display', Arial, sans-serif;
   font-weight: bold;  
   padding: 1rem;
+  margin: 0 7rem;
   border: solid 2px red;
   box-shadow: 5px 5px 15px 5px #000000;
   animation: displayblink 1s infinite;
@@ -126,7 +136,7 @@ html {
 }
 
 .App__button--new-game {
-  margin-top: 10rem;
+  margin-left: 3rem;
   font-family: 'Display', Arial, sans-serif;
   font-weight: bold;
   width: 16rem;

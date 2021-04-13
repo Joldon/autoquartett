@@ -6,9 +6,8 @@ import client from './client'
 import logo from "./Pictures/Battle.png"
 import Sound from 'react-sound'
 import Gamemusic from './Pictures/8_bit_boss_battle_4_by_eliteferrex.mp3'
-import { GiSpeaker, GiBrain, GiMuscleUp, GiBodyHeight, GiSandsOfTime, GiSpeakerOff } from 'react-icons/gi';
-import { BiSmile } from 'react-icons/bi';
-
+import Gamemusic2 from './Pictures/super_street_fighter_2_turbo_8_bit_music_ryu_stage_4297822133384776681.mp3'
+import { GiSpeaker, GiSpeakerOff } from 'react-icons/gi';
 
 
 function App() {
@@ -33,19 +32,20 @@ function App() {
 
   // Our UI State (dependent on the current Game State)
   
+  // These are our global states, determining whether the game is running or if it is over
   const [isGameOn, toggleGameOn] = useState(false)
   const [isGameOver, toggleGameOver] = useState(false)
-  const [winner, setWinner] = useState('')
-
+  
+  // This state gives us the currently selected attribute that we need to compare
   const [currentValue, setCurrentValue] = useState()
   
-  const [display, setDisplay] = useState('Select your weapons!')
-  const [button, toggleButton] = useState(true)
-  const [buttonDisabled, setButtonDisabled] = useState(true)
-
+  // These are the states that change our UI (display, button, computerCard, game winner, music)
+  const [display, setDisplay] = useState('Select your weapons!');
+  const [button, toggleButton] = useState(true);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
   const [computerVisible, setComputerVisible] = useState(false);
-  
-  const [music, setMusic] = useState('PLAYING')
+  const [winner, setWinner] = useState('');
+  const [music, setMusic] = useState('PLAYING');
 
   // useEffect to only start the game when the cards are dealt.
     useEffect(() => {
@@ -55,26 +55,24 @@ function App() {
       }
     }, [gameState.cards])
 
-  //  useEffect that checks if the game has ended
+  //  useEffect that checks if the game has ended (calls the endGame function)
     useEffect(() => {
       if ((!gameState.cards.player.length || !gameState.cards.computer.length) && isGameOn) {
-        endGame()
+        toggleGameOver(true)
+        setButtonDisabled(true)
+        if (!gameState.cards.player.length) {
+          setWinner('computer')
+          setDisplay('You lost this epic battle! What a bitter defeat. Try again.')
+        }
+        if (!gameState.cards.computer.length) {
+          setWinner('player')
+          setDisplay('You won this epic battle! What a glorious triumph!')
+        }
       }
     }, [gameState])
     
-    const endGame = () => {
-      toggleGameOver(true)
-      setButtonDisabled(true)
-      if (!gameState.cards.player.length) {
-        setWinner('computer')
-        setDisplay('You lost this epic battle! What a bitter defeat. Try again.')
-      }
-      if (!gameState.cards.computer.length) {
-        setWinner('player')
-        setDisplay('You won this epic battle! What a glorious triumph!')
-      }
-    }
-    
+ 
+    // This triggers the start of the new game in the game logic and it triggers the start game changes in the UI
   const handleNewGame = () => {
     startGame()
     toggleButton(true)
@@ -84,31 +82,33 @@ function App() {
     setDisplay('Select your weapons')
   }
 
+  // As the new Game function this triggers the battle function in the game logic and also updates the UI
   const handleBattle = () => {
-    if (isGameOn) {
+    if (isGameOn && currentValue) {
       const display = battle(currentValue)
       setDisplay(display)
       toggleButton(false)
       setComputerVisible(true)
-      if (gameState.cards.player.length === 0) {
-        alert('You lose!')
-      } else if (gameState.cards.computer.length === 0) {
-        alert('You win!')
-      }
     }
   }
 
+  // This function triggers the nextCard function in the game logic and it updates the UI (flipping computer Card etc)
   const handleNextCards = () => {
-    if (isGameOn) {
+    if (isGameOn ) {
       nextCards()
       toggleButton(true)
       setComputerVisible(false)
       setDisplay('Select your weapons')
+      setCurrentValue('')
       return
     }
   }
 
-  const toggleMusic = () => {
+  // A very small toggle Function for the music and the symnbol on the button (changing the music state when clicking)
+const gameSong = [Gamemusic, Gamemusic2]
+
+
+  const handleMusic = () => {
     if (music === 'PLAYING') {
       setMusic('PAUSED')
     }
@@ -120,31 +120,46 @@ function App() {
 
   return (
      <div className="App__wrapper">
-      <img src={logo} className="App__logo" />
+      <img src={logo} className="App__logo" alt='Game Logo'/>
        <Sound 
-         url={Gamemusic}
+         url={gameSong[Math.floor(Math.random() * gameSong.length)]}
          playStatus={Sound.status[music]}
          loop={true}
          volume={10}
          autoLoad={true}      
        />
-       <div className="App__button--sound" onClick={toggleMusic}>
-       {music === 'PLAYING'? <GiSpeaker size={'4.8rem'}/> : <GiSpeakerOff size={'4.8rem'}/>}
-       </div>
-       
-       <div className="App__display">{display}</div>
-       {isGameOver? 
-       <div className="App__gameover">{winner === 'computer'? 'YOU LOST!!!!!!!!' : 'YOU WON!!!!!'}</div> :
-       ''
-       }
-       <div className="App__characters">
+       <div className='App_upperrightwrapper'>
+          <div className="App__button--sound" onClick={handleMusic}>
+          {music === 'PLAYING'? <GiSpeaker size={'4.8rem'}/> : <GiSpeakerOff size={'4.8rem'}/>}
+          </div>       
+          <button className="App__button--new-game" onClick={handleNewGame}>
+            New Game
+          </button>
+      </div>  
+       <div className="App__display-and-counter">
          <div className="App__counter App__counter--player">
            {isGameOn? gameState.cards.player.length : '0'}
          </div>
+       <div className="App__display">{display}</div>
+         <div className="App__counter App__counter--computer">
+           {isGameOn? gameState.cards.computer.length : '0'}
+         </div>                  
+       </div>
+       {isGameOver? 
+       
+       <div className="App__gameover">
+        <div className="App__gameover__text">
+          {winner === 'computer'? 'YOU LOST' : 'YOU WON'}
+        </div>
+       </div> :
+       ''
+       }
+       <div className="App__characters">
          {isGameOn ? (
            <Card
              playerCard={true}
              character={characters.filter(character => character.fields.name === gameState.currentCard.player)}
+             currentValue={currentValue}
              setCurrentValue={setCurrentValue}
              flipped={true}
            />
@@ -152,6 +167,7 @@ function App() {
            <Card character={null} flipped={false} />
          )}
          <div className='App__buttons'>
+         <div>
          <button
            className="App__button--battle"
            onClick={button ? handleBattle : handleNextCards}
@@ -159,9 +175,8 @@ function App() {
          >
            {button ? "Battle" : "Next"}
          </button>
-         <button className="App__button--new-game" onClick={handleNewGame}>
-         New Game
-        </button>
+          </div>
+          
         </div>
          {isGameOn ? (
            <Card
@@ -173,12 +188,9 @@ function App() {
          ) : (
            <Card character={null} flipped={false} />
          )}
-         <div className="App__counter App__counter--computer">
-           {isGameOn? gameState.cards.computer.length : '0'}
-         </div>
-       </div>
-     
+       </div>          
      </div>
+     
  );}
  
  export default App;

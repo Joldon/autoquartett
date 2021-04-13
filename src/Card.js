@@ -3,7 +3,7 @@ import './Card.css'
 import { GiBrain, GiMuscleUp, GiBodyHeight, GiSandsOfTime } from 'react-icons/gi';
 import { BiSmile } from 'react-icons/bi';
 
-function Card({character, flipped, setCurrentValue, playerCard}) {
+function Card({character, flipped, currentValue, setCurrentValue, playerCard}) {
 
   const attributes = ['Height', 'Strength', 'Age', 'IQ', 'Funnyness']
   const icons = {
@@ -14,15 +14,19 @@ function Card({character, flipped, setCurrentValue, playerCard}) {
     'Funnyness' : <BiSmile size={'2rem'}/>
   }
   
-  const [selectedAttribute, setSelectedAttribute] = useState('')
 
-  const [isActive, setActive] = useState (false);
 
 const toggleClass = (evt) => {
   if (playerCard) {
-    setActive(!isActive);
-    setSelectedAttribute(evt.target.getAttribute('stat'))
-    setCurrentValue(evt.target.getAttribute('stat'))
+    console.log(currentValue === evt.target.parentElement.getAttribute('stat'))
+    if (currentValue === evt.target.parentElement.getAttribute('stat') || currentValue === evt.target.getAttribute('stat')){
+      setCurrentValue('')
+    } else if (!evt.target.getAttribute('stat')) {
+      setCurrentValue(evt.target.parentElement.getAttribute('stat'))
+    } else {
+      setCurrentValue(evt.target.getAttribute('stat'))
+      
+    }
   }
 }
 
@@ -42,8 +46,8 @@ const toggleClass = (evt) => {
     {attributes.map((attribute) => <div 
       onClick={toggleClass} 
       stat={attribute.toLowerCase()}// e.g. 'height'
-      className={`Character__attr ${selectedAttribute === attribute.toLowerCase() ? 'Character__attr--active': null}`}
-      >{icons[attribute]} <div>{attribute}</div>{character[0].fields[attribute.toLowerCase()]}
+      className={`Character__attr ${currentValue === attribute.toLowerCase() ? 'Character__attr--active': null}`}
+      >{icons[attribute]} <p>{attribute}</p>{character[0].fields[attribute.toLowerCase()]}
       </div> )}
     </div>
   </div>
