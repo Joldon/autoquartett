@@ -1,51 +1,84 @@
-import {useState, useEffect } from 'react'
+import { useReducer} from 'react'
 
 function useGame(characters) {
-  
-    // ******************* GAME STATES ******************
 
+    // This is our initial game state. We only need the cards for player and computer and the currently dealt card.
+    // Everything else can be derived from this game state (game end, score, winner of the round)
+    const initialState = {
+        cards : {
+            player : [],
+            computer: []
+        },
+        currentCard : {
+            player: '',
+            computer: ''
+        }
+    }
 
-  const [playerCards, setPlayerCards] = useState([]);
-  const [computerCards, setComputerCards] = useState([]);
+    // This is our reducer function, the only place where we actually change our state. It takes a user action and turns it
+    // into a change of the state.
+    function reducer(state, action) {
+        switch(action.type) {
+            case 'new game':
+                return {...state, 
+                    cards: 
+                    {
+                    player: [...action.payload.cards[0]], 
+                    computer:[...action.payload.cards[1]]
+                    }, 
+                    currentCard: 
+                    {
+                    player: action.payload.currentCards[0], 
+                    computer:action.payload.currentCards[1]
+                    }
+                }
+            case 'battle':
+                return {...state, 
+                    cards: 
+                    {
+                    player: [...action.payload.newCards[0]], 
+                    computer:[...action.payload.newCards[1]]
+                    },
+                    playerWins: action.payload.playerWins
+                };
+            case 'next card':
+                return {...state,
+                    currentCard: 
+                        {
+                        player: action.payload.newPlayerCard, 
+                        computer: action.payload.newComputerCard
+                        },
+                    }
+            default:
+                return state
+        }
+    }
 
-  const [currentCards, setCurrentCards] = useState([]);
-  const [cardsDealt, setCardsDealt] = useState(false);
+    // Here we are simply putting intial State and reducer function together in React's useReducer Hook.
+    // We get the current state as a variable and the dispatch function that we use to send the user action to the reducer function
+    const [state, dispatch] = useReducer(reducer, initialState)
 
-  const [currentScore, setCurrentScore] = useState({
-    player: 0,
-    computer: 0,
-  });
+    
 
-  const [isGameOver, toggleGameOver] = useState(false);
+// ********************* NEW GAME ACTION *********************
 
-
-  // ******************** START NEW GAME ***********************
-
-  useEffect(() => {
-    if (characters.length) {
+    // This function initiates the new game. It shuffles the cards from COntenful and splits them into two piles
+    // Then it deals the two currentCards. The dispatch function takes the action type 'new game'
+    // and it changes the initial State to the state with the new cards.
+    const newGame = () => {
         const characterNames = characters.map(character => character.fields.name)
         const shuffledCards = shuffleCards(characterNames);
-        setCharacterNames(shuffledCards)
-        splitCards(characterNames);
-        console.log(characters)
+        const [playerCards, computerCards] = splitCards(shuffledCards)
+        const [currentPlayerCard, currentComputerCard] = dealNewCards(playerCards, computerCards)
+        dispatch({type: 'new game', payload: {
+            cards: [playerCards, computerCards],
+            currentCards: [currentPlayerCard, currentComputerCard]
+        }})
+   
+        return true // we return true here because on the App.js level this will tell us that the game has started.
     }
-  }, [characters, ])
 
-
-  // useEffect to prevent States from overlapping. checks if there are any playerCards or computerCards 
-  // and if the current Cards haven't been dealt yet. Only then we deal new Cards.
-    useEffect(() => {
-        // if (playerCards.length && computerCards.length && !currentCards.length) {
-        //     dealNewCards();
-        //     return
-        // }
-        if ((!playerCards.length || !computerCards.length)) {
-            toggleGameOver(true)
-        }
-    }, [playerCards, computerCards, currentCards]);
-
-  
-  // Function that shuffles the cards for us. It uses a shuffle algorithm and returns the shuffled array.
+      // Function that shuffles the cards for us. It uses a shuffle algorithm and returns the shuffled array.
     const shuffleCards = (cards) => {
         for (let i = cards.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -57,84 +90,69 @@ function useGame(characters) {
         return cards; //gives us back the shuffled array (which contains only the characters name)
     };
 
-    // Function that splits the card pile into two of equal length using the splice method.
+// Function that splits the card pile into two of equal length using the splice method.
     const splitCards = (shuffledCards) => {
         const half = Math.ceil(shuffledCards.length / 2);
         const firstHalf = shuffledCards.splice(0, half);
         const secondHalf = shuffledCards.splice(-half);
-        setPlayerCards([...firstHalf]);
-        setComputerCards([...secondHalf]);
+        return [firstHalf, secondHalf]
     };
 
-    // Function that initializes a new game.
-    const startGame = () => {
-        const characterNames = characters.map(character => character.fields.name)
-        const shuffledCards = shuffleCards(characterNames);
-        splitCards(shuffledCards);
-        dealNewCards()
-        
-    };
-
-    // Function that deals the new Cards from the player and the computer pile.
-    const dealNewCards = () => {
+    const dealNewCards = (playerCards, computerCards) => {
         const shuffledPlayerCards = shuffleCards(playerCards)
         const shuffledComputerCards = shuffleCards(computerCards)
-        setCurrentCards([shuffledPlayerCards[0], shuffledComputerCards[0]]);
-        setCardsDealt(true);
-        console.log(currentCards)
+        return [shuffledPlayerCards[0], shuffledComputerCards[0]];
     };
-
-  // ***************************** GAME ROUND MECHANICS **********************
-
-    // this function gets triggered when the Battle BUtton gets clicked.
-    const battle = (attribute) => {
-        return compareAttribute(attribute)  
-    }
     
-    // comparing the selected attribute for the current Cards
-    const compareAttribute = (currentValue) => {
-        const currentAttributes = characters.filter(character => currentCards.includes(character.fields.name))
+
+    // *********************BATTLE FUNCTION**************************
+    
+    // this function takes the selected Attribute and updates the score in the state according to the result.
+    const battle = (currentValue) => {
+        const currentPlayerCard = characters.find(character => character.fields.name === state.currentCard.player )
+        const currentComputerCard = characters.find(character => character.fields.name === state.currentCard.computer )
+        // now we can check for the win condition. The dispatch payload needs only a boolean if the player wins or loses
         
-        let playerWins = true
-        if (currentAttributes[0].fields[currentValue] > currentAttributes[1].fields[currentValue]) {
-            
-            setPlayerCards([...playerCards, ...currentCards]);
+        if (currentPlayerCard.fields[currentValue] > currentComputerCard.fields[currentValue]) {
+            const newPlayerCards = [...state.cards.player]
+            newPlayerCards.push(state.currentCard.computer)
+            const newComputerCards = [...state.cards.computer]
+            const filteredComputerCards = newComputerCards.filter(card => card !== state.currentCard.computer)
+            dispatch({type: 'battle', payload: {
+                newCards: [newPlayerCards, filteredComputerCards]
+                }
+            })
+            console.log(currentPlayerCard)
+            return `${currentPlayerCard.fields[currentValue]} : ${currentComputerCard.fields[currentValue]}`
         }
-        if (currentAttributes[0].fields[currentValue] <= currentAttributes[1].fields[currentValue]) {
-            setComputerCards([...computerCards, ...currentCards]);
-            playerWins = false
+        if (currentPlayerCard.fields[currentValue] <= currentComputerCard.fields[currentValue]) {
+            const newPlayerCards = [...state.cards.player]
+            const filteredPlayerCards = newPlayerCards.filter(card => card !== state.currentCard.player)
+            const newComputerCards = [...state.cards.computer]
+            newComputerCards.push(state.currentCard.player)
+            dispatch({type: 'battle', payload: {
+                newCards: [filteredPlayerCards, newComputerCards]
+                }
+            })
+            console.log(currentPlayerCard)
+            return `${currentPlayerCard.fields[currentValue]} : ${currentComputerCard.fields[currentValue]}`
         }
-        calculateScore()
-        return playerWins
     };
-    
-    //this function simply sets the state of the score to the new value.
-    const calculateScore = () => {
-        setCurrentScore({
-            player: playerCards.length + 1,
-            computer: computerCards.length + 1
-        })
-    }
+      
+    // ****************************NEXT CARD ACTION***********************
 
-    //this function checks if the game is over. If not it deals new Cards.
     const nextCards = () => {
-        if (playerCards.length && computerCards.length) {
-            dealNewCards();
-            return;
+        const [newPlayerCard, newComputerCard] = dealNewCards(state.cards.player, state.cards.computer)
+        dispatch({type: 'next card', payload: {
+            newPlayerCard: newPlayerCard, 
+            newComputerCard: newComputerCard,
+            }
+        })
         }
-        toggleGameOver(true);
-        endGame()
-    };
-    
-    // ***************************** END OF GAME MECHANICS **********************
-    
-    const endGame = () => {
-        setPlayerCards([]);
-        setComputerCards([]);
-        setCurrentCards([]);
-    };
 
-  return [startGame, currentCards, cardsDealt, battle, nextCards, currentScore, isGameOver];
+
+
+    return [state, newGame, battle, nextCards]
 }
 
 export default useGame

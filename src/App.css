@@ -216,17 +216,6 @@ html {
   animation: displayblink2 1s infinite;
 }
 
-@keyframes displayblink {
-  0% {
-    text-shadow: 0px 0px 0px white;
-  }
-  50% {
-    text-shadow: 0px 0px 5px white;
-  }
-  100% {
-    text-shadow: 0px 0px 0px white;
-  }
-}
 
 @keyframes displayblink2 {
   0% {

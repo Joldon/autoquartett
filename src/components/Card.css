@@ -1,7 +1,7 @@
 .Character {
     background-color: white;
     border: 6px double black;
-    background-image: url(./Pictures/clouds.jpeg);
+    background-image: url(../Pictures/clouds.jpeg);
     border-radius: 7px;
     margin: 2rem;
     box-shadow: 5px 5px 15px 5px #000000;
@@ -16,7 +16,7 @@
     margin: 2rem;
     box-shadow: 5px 5px 15px 5px #000000;
     width: 35rem;
-    background-image: url(./Pictures/user1.jpg);
+    background-image: url(../Pictures/user1.jpg);
     background-position: center;
 }
 
